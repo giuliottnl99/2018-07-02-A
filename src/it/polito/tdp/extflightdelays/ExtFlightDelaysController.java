@@ -7,8 +7,10 @@
 package it.polito.tdp.extflightdelays;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.extflightdelays.model.Airport;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,7 +39,7 @@ public class ExtFlightDelaysController {
     private Button btnAnalizza; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxAeroportoPartenza"
-    private ComboBox<?> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
+    private ComboBox<Airport> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAeroportiConnessi"
     private Button btnAeroportiConnessi; // Value injected by FXMLLoader
@@ -50,17 +52,29 @@ public class ExtFlightDelaysController {
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
-
+    	double min = Integer.valueOf(this.distanzaMinima.getText());
+    	List<Airport> airList = model.creaGrafo(min);
+    	this.cmbBoxAeroportoPartenza.getItems().setAll(airList);
     }
 
     @FXML
     void doCalcolaAeroportiConnessi(ActionEvent event) {
-
+    	Airport a = this.cmbBoxAeroportoPartenza.getValue();
+    	String result = model.getResult(a);
+    	this.txtResult.setText(result);
+    	
     }
 
     @FXML
     void doCercaItinerario(ActionEvent event) {
-
+    	double maxAccettato = Double.valueOf(this.numeroVoliTxtInput.getText());
+    	try {
+    	String result = model.getItinerarioMigliore(maxAccettato);
+    	this.txtResult.setText(result);
+    	}
+    	catch(Exception e) {
+    		this.txtResult.setText("errore");
+    	}
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
